@@ -26,15 +26,17 @@ def change_mac(interface, new_mac):
 # End change_mac
 
 
+def get_current_mac(interface):
+    ifconfig_result = subprocess.check_output(["ifconfig", interface])
+    mac_address_search_result = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w", ifconfig_result)
+
+    if mac_address_search_result:
+        return mac_address_search_result.group(0)
+    else:
+        print("[-] Could not read MAC address")
+# end get_current_mac
+
 options = get_arguments()
+current_mac = get_current_mac(options.interface)
+print("Current MAC = " + str(current_mac))
 # change_mac(options.interface, options.new_mac)
-
-ifconfig_result = subprocess.check_output(["ifconfig", options.interface])
-print(ifconfig_result)
-
-mac_address_search_result = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w", ifconfig_result)
-
-if mac_address_search_result:
-    print(mac_address_search_result.group(0))
-else:
-    print("[-] Could not read MAC address")
